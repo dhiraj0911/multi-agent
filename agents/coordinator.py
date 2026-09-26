@@ -1,5 +1,5 @@
-from langchain.chat_models import init_chat_model
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_groq import ChatGroq
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from graph.state import State
 from model.schema import RouteDecision
 
@@ -23,9 +23,8 @@ Rules:
 - Be decisive — always pick exactly one next_agent.
 """
 
-coordinator_model = init_chat_model(
+coordinator_model = ChatGroq(
     model="openai/gpt-oss-120b",
-    model_provider="groq",
     temperature=0.7
 ).with_structured_output(RouteDecision)
 
@@ -44,9 +43,11 @@ def coordinator_agent_node(state: State):
         SystemMessage(content=COORDINATOR_AGENT_PROMPT),
         HumanMessage(content=context),
     ]
+    print("[INFO] Coordinator agent thinking...")
     response = coordinator_model.invoke(messages)
-    
+    print(f"[INFO] Coordinator agent decided to route to {response.next_agent} because {response.reasoning}")
     return {
+        "messages": [AIMessage(content=f"Routing to {response.next_agent}: {response.reasoning}", name="coordinator")],
         "next_agent": response.next_agent,
         "is_completed": response.is_completed,
     }

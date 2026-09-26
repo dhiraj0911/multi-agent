@@ -5,6 +5,7 @@ from langgraph.prebuilt import ToolNode
 def get_square(input_data: str):
     """Compute the square of the input data."""
     result = int(input_data) ** 2  # Example computation
+    print(f"Computed square of {input_data}: {result}")
     return result
 
 @tool
@@ -24,3 +25,13 @@ tools = [
     get_cube, 
     get_quartic
 ]
+
+_tool_node = ToolNode(tools)
+
+def execution_tool_node(state):
+    result = _tool_node.invoke(state)
+    tool_messages = result["messages"]
+    return {
+        "messages": tool_messages,
+        "execution_result": "\n".join(str(m.content) for m in tool_messages),
+    }

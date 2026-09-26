@@ -1,6 +1,7 @@
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import SystemMessage
 from graph.state import State
+from model.schema import RouteDecision
 
 COORDINATOR_AGENT_PROMPT = """
 You are a Coordinator Agent in a multi-agent system.
@@ -26,7 +27,7 @@ coordinator_model = init_chat_model(
     model="gpt-4",
     model_provider="openai",
     temperature=0.7
-)
+).with_structured_output(RouteDecision)
 
 def coordinator_agent_node(state: State):
     messages = [SystemMessage(content=COORDINATOR_AGENT_PROMPT)] + state["messages"]

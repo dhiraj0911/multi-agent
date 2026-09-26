@@ -27,10 +27,7 @@ model = init_chat_model(
 web_search_agent = model.bind_tools(tools)
 
 def web_search_agent_node(state: State):
-    messages = [
-        SystemMessage(content=WEB_SEARCH_PROMPT) +
-        state["messages"]
-    ]
+    messages = [SystemMessage(content=WEB_SEARCH_PROMPT)] + state["messages"]
     response = web_search_agent.invoke(messages)
     return {
         "message": response

@@ -9,8 +9,8 @@ Your responsibility is to synthesize information from multiple agents and provid
 """
 
 synthesis_agent = init_chat_model(
-    model="gpt-4",
-    model_provider="openai",
+    model="openai/gpt-oss-120b",
+    model_provider="groq",
     temperature=0.7
 )
 

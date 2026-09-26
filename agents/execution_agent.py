@@ -17,18 +17,15 @@ operational tasks using the tools available to you.
 """
 
 model = init_chat_model(
-    model="gpt-4",
-    model_provider="openai",
+    model="openai/gpt-oss-120b",
+    model_provider="groq",
     temperature=0.7
 )
 
 execution_agent = model.bind_tools(tools)
 
 def execution_agent_node(state: State):
-    messages = [
-        SystemMessage(content=EXECUTION_AGENT_PROMPT) +
-        state["messages"]
-    ]
+    messages = [SystemMessage(content=EXECUTION_AGENT_PROMPT)] + state["messages"]
     response = execution_agent.invoke(messages)
     return {
         "message": response
